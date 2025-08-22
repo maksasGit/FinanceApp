@@ -5,7 +5,7 @@ FactoryBot.define do
     end
 
     factory :dynamic_category, class: Category do
-        sequence(:name) { |n| "Category-#{n}" }
+        name { Faker::Commerce.product_name }
         category_type { [ "income", "expense" ].sample }
     end
 end

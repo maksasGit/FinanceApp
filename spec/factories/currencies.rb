@@ -6,8 +6,8 @@ FactoryBot.define do
   end
 
   factory :dynamic_currency, class: Currency do
-    sequence(:code) { |n| "CUR#{n}" }
-    sequence(:name) { |n| "Currency #{n}" }
+    code { Faker::Currency.code }
+    name { Faker::Currency.name }
     decimal_places { 2 }
   end
 end

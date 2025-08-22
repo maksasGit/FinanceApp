@@ -12,7 +12,7 @@ FactoryBot.define do
         association :user, factory: :dynamic_user
         association :category
         association :currency, factory: :dynamic_currency
-        amount { rand(10.0..500.0) }
-        sequence(:description) { |n| "Transaction #{n}" }
+        amount { Faker::Commerce.price(range: 1.0..1000.0) }
+        description { Faker::Commerce.product_name }
     end
 end
