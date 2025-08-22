@@ -1,6 +1,5 @@
 require "rails_helper"
 
-
 RSpec.describe Category, type: :model do
     describe "validations" do
         it "valid category" do
@@ -24,14 +23,14 @@ RSpec.describe Category, type: :model do
             parent_category = create(:category)
             child_category = create(:category, parent: parent_category)
             parent_category.destroy
-            expect(Category.exists?(child_category.id)).to be_falsey
+            expect(described_class).not_to exist(child_category.id)
         end
 
         it "on delete user delete categories" do
             user = create(:user)
             category = create(:category, user: user)
             user.destroy
-            expect(Category.exists?(category.id)).to be_falsey
+            expect(described_class).not_to exist(category.id)
         end
     end
 end

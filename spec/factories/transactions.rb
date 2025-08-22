@@ -5,7 +5,7 @@ FactoryBot.define do
         association :currency
         amount { 100.0 }
         description { "Grocery shopping" }
-        transaction_date { Date.today }
+        transaction_date { Time.zone.today }
     end
 
     factory :dynamic_transaction, class: 'Transaction' do
