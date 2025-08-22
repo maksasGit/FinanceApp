@@ -33,7 +33,7 @@ RSpec.describe Transaction, type: :model do
             transaction = create(:transaction)
             user = transaction.user
             user.destroy
-            expect(Transaction.exists?(transaction.id)).to be_falsey
+            expect(described_class).not_to exist(transaction.id)
         end
     end
 end

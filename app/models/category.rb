@@ -1,9 +1,9 @@
 class Category < ApplicationRecord
     belongs_to :user, optional: true
-    belongs_to :parent, class_name: "Category", optional: true
+    belongs_to :parent, class_name: "Category", optional: true, inverse_of: :children
 
-    has_many :children, class_name: "Category", foreign_key: "parent_id", dependent: :destroy
-    has_many :transactions
+    has_many :children, class_name: "Category", foreign_key: "parent_id", dependent: :destroy, inverse_of: :parent
+    has_many :transactions, dependent: :nullify
 
     validates :name, presence: true
     validates :category_type, presence: true, inclusion: { in: [ "income", "expense" ] }
