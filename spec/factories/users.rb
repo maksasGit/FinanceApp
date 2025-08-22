@@ -6,8 +6,8 @@ FactoryBot.define do
   end
 
   factory :dynamic_user, class: User do
-    sequence(:name) { |n| "User-#{n}" }
-    sequence(:email) { |n| "user#{n}@example.com" }
-    password { "password123" }
+    name { Faker::Name.name }
+    email { Faker::Internet.unique.email }
+    password { Faker::Internet.password(min_length: 8) }
   end
 end
