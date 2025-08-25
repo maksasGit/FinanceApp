@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   Rails.application.routes.draw do
     resources :users, only: [ :index, :show, :create ]
-    resources :currencies, only: [ :index ]
+    resources :currencies, only: [ :index, :show, :create ]
     resources :categories, only: [ :index ]
     resources :transactions, only: [ :index ]
   end

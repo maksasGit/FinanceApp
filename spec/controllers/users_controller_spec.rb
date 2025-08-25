@@ -63,7 +63,7 @@ RSpec.describe UsersController, type: :controller do
             it "does not create a new transaction" do
                 expect {
                     post :create, params: { user:  invalid_attributes }
-                }.not_to change(Transaction, :count)
+                }.not_to change(User, :count)
             end
 
             it "returns http unprocessable_content" do
