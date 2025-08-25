@@ -5,6 +5,12 @@ FactoryBot.define do
     password { "password123" }
   end
 
+  factory :invalid_user, class: User do
+    name { "" }
+    email { nil }
+    password { "c" }
+  end
+
   factory :dynamic_user, class: User do
     name { Faker::Name.name }
     email { Faker::Internet.unique.email }
