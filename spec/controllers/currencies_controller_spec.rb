@@ -60,7 +60,7 @@ RSpec.describe CurrenciesController, type: :controller do
         context "with invalid params" do
             let(:invalid_attributes) { build(:invalid_currency).attributes }
 
-            it "does not create a new transaction" do
+            it "does not create a new currency" do
                 expect {
                     post :create, params: { currency:  invalid_attributes }
                 }.not_to change(Currency, :count)

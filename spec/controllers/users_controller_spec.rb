@@ -60,7 +60,7 @@ RSpec.describe UsersController, type: :controller do
         context "with invalid params" do
             let(:invalid_attributes) { build(:invalid_user).attributes }
 
-            it "does not create a new transaction" do
+            it "does not create a new user" do
                 expect {
                     post :create, params: { user:  invalid_attributes }
                 }.not_to change(User, :count)

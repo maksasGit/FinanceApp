@@ -12,7 +12,7 @@ FactoryBot.define do
   end
 
   factory :dynamic_currency, class: Currency do
-    code { Faker::Currency.code }
+    code { Faker::Currency.code + Faker::Currency.code } # pure Faker::Currency.code can easaly duplicated in one test, to prevent I double it
     name { Faker::Currency.name }
     decimal_places { 2 }
   end
