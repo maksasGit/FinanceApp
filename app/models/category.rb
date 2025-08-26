@@ -7,10 +7,17 @@ class Category < ApplicationRecord
 
     validates :name, presence: true
     validates :category_type, presence: true, inclusion: { in: [ "income", "expense" ] }
+    validate :parent_must_exist
 
     before_validation :set_default_category_type
 
     private
+
+    def parent_must_exist
+        if parent_id.present? && !Category.exists?(parent_id)
+            errors.add(:parent_id, "must refer to an existing category")
+        end
+    end
 
     def set_default_category_type
         self.category_type = "expense" if category_type.blank?

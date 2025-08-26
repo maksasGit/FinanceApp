@@ -21,6 +21,6 @@ class CategoriesController < ApplicationController
     private
 
     def category_params
-        params.expect(category: [ :user, :parent, :name, :category_type ])
+        params.expect(category: [ :user_id, :parent_id, :name, :category_type ])
     end
 end
