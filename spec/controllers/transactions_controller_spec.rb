@@ -38,7 +38,6 @@ RSpec.describe TransactionsController, type: :controller do
             let(:valid_attributes) { build(:transaction_with_associations).attributes }
 
             it "creates a new transaction" do
-                puts valid_attributes
                 expect {
                     post :create, params: { transaction: valid_attributes }
                 }.to change(Transaction, :count).by(1)

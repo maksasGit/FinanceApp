@@ -72,4 +72,88 @@ RSpec.describe UsersController, type: :controller do
             end
         end
     end
+
+    describe "PUT #update" do
+        let(:user) { create(:user) }
+
+        context "with valid params" do
+            let(:new_attributes) { { name: "New Name", email: "new@example.com" } }
+
+            it "updates the requested user" do
+                put :update, params: { id: user.id, user: new_attributes }
+
+                user.reload
+                expect(user.email).to eq("new@example.com")
+            end
+
+            it "returns http success" do
+                put :update, params: { id: user.id, user: new_attributes }
+
+                expect(response).to have_http_status(:ok)
+            end
+
+            it "returns the updated user" do
+                put :update, params: { id: user.id, user: new_attributes }
+
+                body = response.parsed_body
+                expect(body["email"]).to eq("new@example.com")
+            end
+        end
+
+        context "with invalid params" do
+            let(:invalid_attributes) { { email: nil } }
+
+            it "does not update the user" do
+                put :update, params: { id: user.id, user: invalid_attributes }
+
+                user.reload
+                expect(user.email).not_to be_nil
+            end
+
+            it "returns unprocessable_entity status" do
+                put :update, params: { id: user.id, user: invalid_attributes }
+
+                expect(response).to have_http_status(:unprocessable_content)
+            end
+
+            it "returns validation errors" do
+                put :update, params: { id: user.id, user: invalid_attributes }
+
+                body = response.parsed_body
+                expect(body["errors"]).to include("Email can't be blank")
+            end
+        end
+
+        context "when user not found" do
+            it "returns 404 not found" do
+                put :update, params: { id: 0, user: { name: "Test" } }
+
+                expect(response).to have_http_status(:not_found)
+            end
+        end
+    end
+
+    describe "DELETE #destroy" do
+        let!(:user) { create(:user) }
+
+        it "deletes the user" do
+            expect {
+                delete :destroy, params: { id: user.id }
+            }.to change(User, :count).by(-1)
+       end
+
+        it "returns no content status" do
+            delete :destroy, params: { id: user.id }
+
+            expect(response).to have_http_status(:no_content)
+        end
+
+        context "when user not found" do
+            it "returns 404 not found" do
+                delete :destroy, params: { id: 0 }
+
+                expect(response).to have_http_status(:not_found)
+            end
+        end
+    end
 end
