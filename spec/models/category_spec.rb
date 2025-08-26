@@ -36,6 +36,20 @@ RSpec.describe Category, type: :model do
             expect(child_category.errors[:parent_id]).to include("must refer to an existing category")
         end
 
+        it "is valid when user exists" do
+            user = create(:user)
+            category = create(:category, user_id: user.id)
+
+            expect(category).to be_valid
+        end
+
+        it "is invalid when user does not exist" do
+            category = build(:category, user_id: 100000)
+            category.valid?
+
+            expect(category.errors[:user_id]).to include("must refer to an existing user")
+        end
+
         it "destroy category with children" do
             parent_category = create(:category)
             child_category = create(:category, parent: parent_category)

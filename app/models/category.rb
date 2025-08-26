@@ -7,7 +7,9 @@ class Category < ApplicationRecord
 
     validates :name, presence: true
     validates :category_type, presence: true, inclusion: { in: [ "income", "expense" ] }
+
     validate :parent_must_exist
+    validate :user_must_exist
 
     before_validation :set_default_category_type
 
@@ -16,6 +18,12 @@ class Category < ApplicationRecord
     def parent_must_exist
         if parent_id.present? && !Category.exists?(parent_id)
             errors.add(:parent_id, "must refer to an existing category")
+        end
+    end
+
+    def user_must_exist
+        if user_id.present? && !User.exists?(user_id)
+            errors.add(:user_id, "must refer to an existing user")
         end
     end
 
