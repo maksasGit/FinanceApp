@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe CurrenciesController, type: :controller do
+    before do
+        allow(controller).to receive(:authorized).and_return(true)
+    end
+
     describe "GET #index" do
         before do
             create_list(:dynamic_currency, 3)

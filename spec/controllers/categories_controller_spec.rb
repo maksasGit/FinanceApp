@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe CategoriesController, type: :controller do
+    before do
+        allow(controller).to receive(:authorized).and_return(true)
+    end
+
     describe "GET #index" do
         before do
             create_list(:dynamic_category, 3)
