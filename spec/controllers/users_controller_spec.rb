@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
+    before do
+        allow(controller).to receive(:authorized).and_return(true)
+    end
+
     describe "GET #index" do
         before do
             create_list(:dynamic_user, 3)
@@ -35,7 +39,14 @@ RSpec.describe UsersController, type: :controller do
 
     describe "POST #create" do
         context "with valid params" do
-            let(:valid_attributes) { build(:user).attributes }
+            let(:valid_attributes) do
+                {
+                    name: "John Doe",
+                    email: "john@example.com",
+                    password: "password123",
+                    password_confirmation: "password123"
+                }
+                end
 
             it "creates a new user" do
                 expect {

@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+    skip_before_action :authorized, only: [ :create ]
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
 
     def index
@@ -13,8 +14,12 @@ class UsersController < ApplicationController
 
     def create
         user = User.new(user_params)
+        @token = encode_token(user_id: user.id)
         if user.save
-            render json: user, status: :created
+            render json: {
+                user: user,
+                token: @token
+            }, status: :created
         else
             render json: { errors: user.errors.full_messages }, status: :unprocessable_content
         end
@@ -45,6 +50,6 @@ class UsersController < ApplicationController
     end
 
     def user_params
-        params.expect(user: [ :name, :email, :password ])
+        params.expect(user: [ :name, :email, :password, :password_confirmation ])
     end
 end
