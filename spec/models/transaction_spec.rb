@@ -36,4 +36,21 @@ RSpec.describe Transaction, type: :model do
             expect(described_class).not_to exist(transaction.id)
         end
     end
+
+    describe "#amount_adjustment" do
+        let(:income_category) { create(:category, category_type: "income") }
+        let(:expense_category) { create(:category, category_type: "expense") }
+
+        it "returns positive amount for income category" do
+            transaction = build(:transaction, amount: 100, category: income_category)
+
+            expect(transaction.amount_adjustment).to eq(100)
+        end
+
+        it "returns negative amount for expense category" do
+            transaction = build(:transaction, amount: 100, category: expense_category)
+
+            expect(transaction.amount_adjustment).to eq(-100)
+        end
+    end
 end

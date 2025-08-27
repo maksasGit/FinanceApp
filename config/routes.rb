@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     resources :users, only: [ :index, :show, :create, :update, :destroy ]
     resources :currencies, only: [ :index, :show, :create ]
     resources :categories, only: [ :index, :show, :create ]
-    resources :transactions, only: [ :index, :show, :create ]
+    resources :transactions, only: [ :index, :show, :create, :update, :destroy ]
   end
 
   # Defines the root path route ("/")

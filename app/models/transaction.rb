@@ -9,6 +9,13 @@ class Transaction < ApplicationRecord
 
     before_validation :set_date_if_not_set
 
+    public
+
+    def amount_adjustment
+        multiplier = category&.category_type == "income" ? 1 : -1
+        amount * multiplier
+    end
+
     private
 
     def set_date_if_not_set
