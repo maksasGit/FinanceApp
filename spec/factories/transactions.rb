@@ -20,6 +20,7 @@ FactoryBot.define do
     end
 
     factory :invalid_transaction, class: Transaction do
+        user_id { 0 }
         amount { -100 }
         description { nil }
         transaction_date { nil }

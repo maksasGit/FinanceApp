@@ -28,3 +28,9 @@ RSpec:
 
 Layout/EmptyLines:
   Enabled: true
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 3
