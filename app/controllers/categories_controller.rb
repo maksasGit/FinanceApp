@@ -1,26 +1,51 @@
 class CategoriesController < ApplicationController
+    rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
+    rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_content
+
     def index
-        categories = Category.all
+        categories = current_user.categories
+
         render json: categories, status: :ok
     end
 
     def show
-        category = Category.find(params[:id])
+        category = current_user.categories.find(params[:id])
+
         render json: category, status: :ok
     end
 
     def create
-        category = Category.new(category_params)
-        if category.save
-            render json: category, status: :created
-        else
-            render json: { errors: category.errors.full_messages }, status: :unprocessable_content
-        end
+        category = current_user.categories.new(category_params)
+        category.save!
+
+        render json: category, status: :created
+    end
+
+    def update
+        category = current_user.categories.find(params[:id])
+        category.update!(category_params)
+
+        render json: category, status: :ok
+    end
+
+    def destroy
+        category = current_user.categories.find(params[:id])
+        category.destroy!
+
+        head :no_content
     end
 
     private
 
+    def render_not_found(exception)
+        render json: { error: exception.message }, status: :not_found
+    end
+
+    def render_unprocessable_content(exception)
+        render json: { error: exception.record.errors.full_messages }, status: :unprocessable_content
+    end
+
     def category_params
-        params.expect(category: [ :user_id, :parent_id, :name, :category_type ])
+        params.expect(category: [ :parent_id, :name, :category_type ])
     end
 end
