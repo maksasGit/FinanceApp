@@ -4,6 +4,7 @@ class Category < ApplicationRecord
 
     has_many :children, class_name: "Category", foreign_key: "parent_id", dependent: :destroy, inverse_of: :parent
     has_many :transactions, dependent: :nullify
+    has_many :scheduled_transactions, dependent: :nullify
 
     validates :name, presence: true
     validates :category_type, presence: true, inclusion: { in: [ "income", "expense" ] }
