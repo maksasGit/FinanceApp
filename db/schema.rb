@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_26_124450) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_27_143327) do
   create_table "categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "category_type", null: false
@@ -29,6 +29,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_26_124450) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["code"], name: "index_currencies_on_code", unique: true
+  end
+
+  create_table "scheduled_transactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "category_id", null: false
+    t.bigint "currency_id", null: false
+    t.decimal "amount", precision: 15, scale: 2, null: false
+    t.string "description"
+    t.boolean "repeatable", default: false, null: false
+    t.string "frequency", default: "once", null: false
+    t.datetime "start_date", null: false
+    t.datetime "end_date"
+    t.integer "day_of_week"
+    t.integer "day_of_month"
+    t.datetime "next_execute_at", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_scheduled_transactions_on_category_id"
+    t.index ["currency_id"], name: "index_scheduled_transactions_on_currency_id"
+    t.index ["next_execute_at"], name: "index_scheduled_transactions_on_next_execute_at"
+    t.index ["user_id"], name: "index_scheduled_transactions_on_user_id"
   end
 
   create_table "transactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -57,6 +79,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_26_124450) do
 
   add_foreign_key "categories", "categories", column: "parent_id"
   add_foreign_key "categories", "users"
+  add_foreign_key "scheduled_transactions", "categories"
+  add_foreign_key "scheduled_transactions", "currencies"
+  add_foreign_key "scheduled_transactions", "users"
   add_foreign_key "transactions", "categories"
   add_foreign_key "transactions", "currencies"
   add_foreign_key "transactions", "users"

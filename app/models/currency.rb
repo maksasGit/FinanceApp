@@ -1,5 +1,6 @@
 class Currency < ApplicationRecord
     has_many :transactions, dependent: :nullify
+    has_many :scheduled_transactions, dependent: :nullify
 
     validates :code, presence: true, uniqueness: true
     validates :name, presence: true
