@@ -11,8 +11,6 @@ Rails.application.routes.draw do
     resources :currencies, only: [ :index, :show, :create, :update, :destroy ]
     resources :categories, only: [ :index, :show, :create, :update, :destroy ]
     resources :transactions, only: [ :index, :show, :create, :update, :destroy ]
+    resources :scheduled_transactions, only: [ :index, :show, :create, :update, :destroy ]
   end
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end
