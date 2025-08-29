@@ -3,13 +3,18 @@ class TransactionsController < ApplicationController
     rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_content
 
     def index
-        transactions = current_user.transactions
+        transactions = current_user.transactions.includes(:category, :currency)
+
+        transactions = TransactionFilterService.new(transactions, params).call
+
+        sort_param, sort_order = parse_sort_params(params[:sort])
+        transactions = TransactionSortService.new(transactions, sort_param, sort_order).call if sort_param.present?
 
         render json: transactions, status: :ok
     end
 
     def show
-        transaction = current_user.transactions.find(params[:id])
+        transaction = current_user.transactions.includes(:category, :currency).find(params[:id])
 
         render json: transaction, status: :ok
     end
@@ -43,6 +48,16 @@ class TransactionsController < ApplicationController
 
     def render_unprocessable_content(exception)
         render json: { error: exception.record.errors.full_messages }, status: :unprocessable_content
+    end
+
+    def parse_sort_params(param)
+        return [ nil, nil ] if param.blank?
+
+        if param[0] == "-"
+            [ param[1..], :desc ]
+        else
+            [ param, :asc ]
+        end
     end
 
     def transaction_params
