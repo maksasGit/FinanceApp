@@ -6,16 +6,14 @@ plugins:
   - rubocop-performance
   - rubocop-rspec
 
-
 AllCops:
   TargetRubyVersion: 3.3
   NewCops: enable
   Exclude:
-    - 'bin/**/*'
-    - 'db/schema.rb'
-    - 'node_modules/**/*'
-    - 'vendor/**/*'
-
+    - "bin/**/*"
+    - "db/schema.rb"
+    - "node_modules/**/*"
+    - "vendor/**/*"
 
 Rails:
   Enabled: true

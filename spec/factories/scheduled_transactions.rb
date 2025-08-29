@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :scheduled_transaction do
-    association :user
+    association :user, factory: :dynamic_user
     association :category
-    association :currency
+    association :currency, factory: :dynamic_currency
 
     amount { Faker::Commerce.price(range: 10.0..1000.0) }
     description { Faker::Lorem.sentence(word_count: 3) }
@@ -14,8 +14,8 @@ FactoryBot.define do
     active { true }
 
     end_date { nil }
-    day_of_week { nil }    # Integer 0 (Sunday) - 6 (Saturday)
-    day_of_month { nil }   # Integer 1..31
+    day_of_week { nil }
+    day_of_month { nil }
 
     trait :daily do
       repeatable { true }
@@ -25,7 +25,7 @@ FactoryBot.define do
     trait :weekly do
       repeatable { true }
       frequency { "weekly" }
-      day_of_week { 1 } # Monday
+      day_of_week { 1 }
     end
 
     trait :monthly do
