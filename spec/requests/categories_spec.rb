@@ -29,7 +29,14 @@ RSpec.describe "Categories", type: :request do
       expect(json_response.size).to eq(3)
       expect(json_response.all? { |t| t["user_id"] == current_user.id }).to be true
     end
-  end
+
+    it "returns all categories belonging to current_user + default with user equal nil" do
+      create_list(:category, 5) # with no user
+      get "/categories", headers: headers
+
+      expect(json_response.size).to eq(3 + 5)
+      end
+    end
 
   describe "GET /categories/:id" do
     let!(:current_user_category) { create(:dynamic_category, user: current_user) }
@@ -70,12 +77,28 @@ RSpec.describe "Categories", type: :request do
       expect(json_response["user_id"]).to eq(current_user.id)
     end
 
-    it 'returns errors for invalid data' do
+    it 'returns not_found for not existing record' do
       invalid_params = { category: { parent_id: 0 } }
       post '/categories', params: invalid_params, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_content)
+      expect(response).to have_http_status(:not_found)
       expect(json_response["error"]).to be_present
+    end
+
+    it 'returns unprocessable_content for invalid data' do
+      invalid_params = { category: { name: "", category_type: "invalid_type" } }
+      post '/categories', params: invalid_params, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+  it 'returns forbidden for data when parent_id category assigned to antoher user' do
+      other_user_category = create(:dynamic_category, user: other_user)
+      forbidden_params = valid_params
+      forbidden_params[:category][:parent_id] = other_user_category.id
+      post '/categories', params: forbidden_params, headers: headers
+
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
