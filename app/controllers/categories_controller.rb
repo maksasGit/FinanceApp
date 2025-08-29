@@ -3,9 +3,11 @@ class CategoriesController < ApplicationController
     rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_content
 
     def index
-        categories = current_user.categories
+        user_categories = current_user.categories
+        default_categories = Category.where(user_id: nil)
+        all_categories = default_categories + user_categories
 
-        render json: categories, status: :ok
+        render json: all_categories, status: :ok
     end
 
     def show
@@ -15,6 +17,14 @@ class CategoriesController < ApplicationController
     end
 
     def create
+        if category_params[:parent_id].present?
+            parent_category = Category.find(category_params[:parent_id])
+            unless parent_category.user.nil? || parent_category.user == current_user
+                render json: { error: "Parent category does not belong to current user or is not a shared category" }, status: :forbidden
+                return
+            end
+        end
+
         category = current_user.categories.new(category_params)
         category.save!
 
