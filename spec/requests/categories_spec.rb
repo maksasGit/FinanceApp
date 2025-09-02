@@ -113,7 +113,7 @@ RSpec.describe "Categories", type: :request do
       category: {
         parent_id: parent_category.id,
         name: "Valid name",
-        category_type: current_user_category.category_type
+        category_type: parent_category.category_type
       }
     }
     end

@@ -11,7 +11,9 @@ class CategoriesController < ApplicationController
     end
 
     def show
-        category = current_user.categories.find(params[:id])
+        category = current_user.categories.where(id: params[:id])
+                 .or(Category.where(id: params[:id], user_id: nil))
+                 .first!
 
         render json: category, status: :ok
     end
