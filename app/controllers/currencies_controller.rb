@@ -5,27 +5,27 @@ class CurrenciesController < ApplicationController
     def index
         currencies = Currency.all
 
-        render json: currencies, status: :ok
+        render_jsonapi_response(currencies)
     end
 
     def show
         currency = Currency.find(params[:id])
 
-        render json: currency, status: :ok
+        render_jsonapi_response(currency)
     end
 
     def create
         currency = Currency.new(currency_params)
         currency.save!
 
-        render json: currency, status: :created
+        render_jsonapi_response(currency, status: :created)
     end
 
     def update
         currency = Currency.find(params[:id])
         currency.update!(currency_params)
 
-        render json: currency, status: :ok
+        render_jsonapi_response(currency)
     end
 
     def destroy
@@ -38,11 +38,11 @@ class CurrenciesController < ApplicationController
     private
 
     def render_not_found(exception)
-        render json: { error: exception.message }, status: :not_found
+        render_jsonapi_error(exception.message, status: :not_found)
     end
 
     def render_unprocessable_content(exception)
-        render json: { error: exception.record.errors.full_messages }, status: :unprocessable_content
+        render_jsonapi_error(exception.record.errors.full_messages, status: :unprocessable_content)
     end
 
     def currency_params

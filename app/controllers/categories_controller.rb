@@ -7,7 +7,7 @@ class CategoriesController < ApplicationController
         default_categories = Category.where(user_id: nil)
         all_categories = default_categories + user_categories
 
-        render json: all_categories, status: :ok
+        render_jsonapi_response(all_categories)
     end
 
     def show
@@ -15,21 +15,21 @@ class CategoriesController < ApplicationController
                  .or(Category.where(id: params[:id], user_id: nil))
                  .first!
 
-        render json: category, status: :ok
+        render_jsonapi_response(category)
     end
 
     def create
         category = current_user.categories.new(category_params)
         category.save!
 
-        render json: category, status: :created
+        render_jsonapi_response(category, status: :created)
     end
 
     def update
         category = current_user.categories.find(params[:id])
         category.update!(category_params)
 
-        render json: category, status: :ok
+        render_jsonapi_response(category)
     end
 
     def destroy
@@ -42,11 +42,11 @@ class CategoriesController < ApplicationController
     private
 
     def render_not_found(exception)
-        render json: { error: exception.message }, status: :not_found
+        render_jsonapi_error(exception.message, status: :not_found)
     end
 
     def render_unprocessable_content(exception)
-        render json: { error: exception.record.errors.full_messages }, status: :unprocessable_content
+        render_jsonapi_error(exception.record.errors.full_messages, status: :unprocessable_content)
     end
 
     def category_params

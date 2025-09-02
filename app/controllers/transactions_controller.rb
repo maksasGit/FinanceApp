@@ -10,26 +10,26 @@ class TransactionsController < ApplicationController
         sort_param, sort_order = parse_sort_params(params[:sort])
         transactions = TransactionSortService.new(transactions, sort_param, sort_order).call if sort_param.present?
 
-        render json: transactions, status: :ok
+        render_jsonapi_response(transactions, include: [ :category, :currency ])
     end
 
     def show
         transaction = current_user.transactions.includes(:category, :currency).find(params[:id])
 
-        render json: transaction, status: :ok
+        render_jsonapi_response(transaction, include: [ :category, :currency ])
     end
 
     def create
         service = TransactionCreateService.new(current_user, transaction_params)
 
-        render json: service.call, status: :created
+        render_jsonapi_response(service.call, include: [ :category, :currency ], status: :created)
     end
 
     def update
         transaction = current_user.transactions.find(params[:id])
         service = TransactionUpdateService.new(transaction, transaction_params)
 
-        render json: service.call, status: :ok
+        render_jsonapi_response(service.call, include: [ :category, :currency ])
     end
 
     def destroy
@@ -43,11 +43,11 @@ class TransactionsController < ApplicationController
     private
 
     def render_not_found(exception)
-        render json: { error: exception.message }, status: :not_found
+        render_jsonapi_error(exception.message, status: :not_found)
     end
 
     def render_unprocessable_content(exception)
-        render json: { error: exception.record.errors.full_messages }, status: :unprocessable_content
+        render_jsonapi_error(exception.record.errors.full_messages, status: :unprocessable_content)
     end
 
     def parse_sort_params(param)

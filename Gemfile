@@ -11,7 +11,7 @@ gem "bcrypt", "3.1.20"
 gem "jwt", "3.1.2"
 
 # --- APIs / Serialization ---
-gem "active_model_serializers", "0.10.15"
+gem "jsonapi-serializer", "2.2.0"
 gem "rack-cors", "3.0.0"
 
 # --- Background Jobs  ---

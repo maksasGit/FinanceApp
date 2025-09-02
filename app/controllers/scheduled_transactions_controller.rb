@@ -5,27 +5,27 @@ class ScheduledTransactionsController < ApplicationController
     def index
         scheduled_transactions = current_user.scheduled_transactions
 
-        render json: scheduled_transactions, status: :ok
+        render_jsonapi_response(scheduled_transactions)
     end
 
     def show
         scheduled_transaction = current_user.scheduled_transactions.find(params[:id])
 
-        render json: scheduled_transaction, status: :ok
+        render_jsonapi_response(scheduled_transaction)
     end
 
     def create
         scheduled_transaction = current_user.scheduled_transactions.new(scheduled_transaction_params)
         scheduled_transaction.save!
 
-        render json: scheduled_transaction, status: :created
+        render_jsonapi_response(scheduled_transaction, status: :created)
     end
 
     def update
         scheduled_transaction = current_user.scheduled_transactions.find(params[:id])
         service = ScheduledTransactionUpdateService.new(scheduled_transaction, scheduled_transaction_params)
 
-        render json: service.call, status: :ok
+        render_jsonapi_response(service.call)
     end
 
     def destroy
@@ -38,11 +38,11 @@ class ScheduledTransactionsController < ApplicationController
     private
 
     def render_not_found(exception)
-        render json: { error: exception.message }, status: :not_found
+        render_jsonapi_error(exception.message, status: :not_found)
     end
 
     def render_unprocessable_content(exception)
-        render json: { error: exception.record.errors.full_messages }, status: :unprocessable_content
+        render_jsonapi_error(exception.record.errors.full_messages, status: :unprocessable_content)
     end
 
     def scheduled_transaction_params
