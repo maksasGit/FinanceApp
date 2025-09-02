@@ -18,7 +18,7 @@ RSpec.describe "Auths", type: :request do
       it "returns unauthorized" do
         post AUTH_URL, params: { auth: { email: user.email,  password: 'wrongpass' } }
 
-        expect(response.parsed_body['message']).to eq('Incorrect password')
+        expect(response.parsed_body["errors"][0]["detail"]).to eq('Incorrect password')
       end
     end
 
