@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+CATEGORIES_URL = "/api/v1/categories".freeze
+
 RSpec.describe "Categories", type: :request do
   let(:current_user) { create(:auth_user) }
   let(:token) { JWT.encode({ user_id: current_user.id }, Rails.application.secret_key_base) }
@@ -18,13 +20,13 @@ RSpec.describe "Categories", type: :request do
     end
 
     it "returns status ok" do
-      get "/categories", headers: headers
+      get CATEGORIES_URL, headers: headers
 
       expect(response).to have_http_status(:ok)
     end
 
     it "returns all categories belonging to current_user" do
-      get "/categories", headers: headers
+      get CATEGORIES_URL, headers: headers
 
       expect(json_response.size).to eq(3)
       expect(json_response.all? { |t| t["user_id"] == current_user.id }).to be true
@@ -32,7 +34,7 @@ RSpec.describe "Categories", type: :request do
 
     it "returns all categories belonging to current_user + default with user equal nil" do
       create_list(:category, 5) # with no user
-      get "/categories", headers: headers
+      get CATEGORIES_URL, headers: headers
 
       expect(json_response.size).to eq(3 + 5)
       end
@@ -43,14 +45,14 @@ RSpec.describe "Categories", type: :request do
     let!(:other_user_category) { create(:dynamic_category, user: other_user) }
 
     it "returns the category if it belongs to the user" do
-      get "/categories/#{current_user_category.id}", headers: headers
+      get CATEGORIES_URL + "/#{current_user_category.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(json_response["id"]).to eq(current_user_category.id)
     end
 
     it "returns 404 if the category does not belong to the user" do
-      get "/categories/#{other_user_category.id}", headers: headers
+      get CATEGORIES_URL + "/#{other_user_category.id}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
@@ -70,7 +72,7 @@ RSpec.describe "Categories", type: :request do
 
     it "creates the category belonging to current user" do
       expect {
-        post '/categories', params: valid_params, headers: headers
+        post CATEGORIES_URL, params: valid_params, headers: headers
       }.to change(Category, :count).by(1)
 
       expect(response).to have_http_status(:created)
@@ -79,7 +81,7 @@ RSpec.describe "Categories", type: :request do
 
     it 'returns not_found for not existing record' do
       invalid_params = { category: { parent_id: 0 } }
-      post '/categories', params: invalid_params, headers: headers
+      post CATEGORIES_URL, params: invalid_params, headers: headers
 
       expect(response).to have_http_status(:not_found)
       expect(json_response["error"]).to be_present
@@ -87,7 +89,7 @@ RSpec.describe "Categories", type: :request do
 
     it 'returns unprocessable_content for invalid data' do
       invalid_params = { category: { name: "", category_type: "invalid_type" } }
-      post '/categories', params: invalid_params, headers: headers
+      post CATEGORIES_URL, params: invalid_params, headers: headers
 
       expect(response).to have_http_status(:unprocessable_content)
     end
@@ -96,7 +98,7 @@ RSpec.describe "Categories", type: :request do
       other_user_category = create(:dynamic_category, user: other_user)
       forbidden_params = valid_params
       forbidden_params[:category][:parent_id] = other_user_category.id
-      post '/categories', params: forbidden_params, headers: headers
+      post '/api/v1/categories', params: forbidden_params, headers: headers
 
       expect(response).to have_http_status(:forbidden)
     end
@@ -117,7 +119,7 @@ RSpec.describe "Categories", type: :request do
     end
 
     it "updates a category for current_user" do
-      put "/categories/#{current_user_category.id}", params: valid_update_params, headers: headers
+      put CATEGORIES_URL + "/#{current_user_category.id}", params: valid_update_params, headers: headers
       current_user_category.reload
 
       expect(response).to have_http_status(:ok)
@@ -125,7 +127,7 @@ RSpec.describe "Categories", type: :request do
     end
 
     it "returns 404 if category not owned" do
-      put "/categories/#{other_user_category.id}", params: valid_update_params, headers: headers
+      put CATEGORIES_URL + "/#{other_user_category.id}", params: valid_update_params, headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
@@ -137,14 +139,14 @@ RSpec.describe "Categories", type: :request do
 
     it "deletes current_user's category" do
       expect {
-        delete "/categories/#{current_user_category.id}", headers: headers
+        delete CATEGORIES_URL + "/#{current_user_category.id}", headers: headers
       }.to change(Category, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
     end
 
     it "returns 404 for unauthorized category" do
-      delete "/categories/#{other_user_category.id}", headers: headers
+      delete CATEGORIES_URL + "/#{other_user_category.id}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
