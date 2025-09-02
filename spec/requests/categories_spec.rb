@@ -65,7 +65,7 @@ RSpec.describe "Categories", type: :request do
       category: {
         parent_id: parent_category.id,
         name: "Valid name",
-        category_type: "expense"
+        category_type: parent_category.category_type
       }
     }
     end
@@ -79,11 +79,11 @@ RSpec.describe "Categories", type: :request do
       expect(json_response["user_id"]).to eq(current_user.id)
     end
 
-    it 'returns not_found for not existing record' do
+    it 'returns unprocessable_content for not existing record' do
       invalid_params = { category: { parent_id: 0 } }
       post CATEGORIES_URL, params: invalid_params, headers: headers
 
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to be_present
     end
 
@@ -94,13 +94,13 @@ RSpec.describe "Categories", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
     end
 
-  it 'returns forbidden for data when parent_id category assigned to antoher user' do
+  it 'returns unprocessable_content for data when parent_id category assigned to antoher user' do
       other_user_category = create(:dynamic_category, user: other_user)
       forbidden_params = valid_params
       forbidden_params[:category][:parent_id] = other_user_category.id
       post '/api/v1/categories', params: forbidden_params, headers: headers
 
-      expect(response).to have_http_status(:forbidden)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -113,7 +113,7 @@ RSpec.describe "Categories", type: :request do
       category: {
         parent_id: parent_category.id,
         name: "Valid name",
-        category_type: "expense"
+        category_type: current_user_category.category_type
       }
     }
     end
