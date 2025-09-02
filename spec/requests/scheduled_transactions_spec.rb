@@ -1,4 +1,6 @@
- require 'rails_helper'
+require 'rails_helper'
+
+SCHEDULED_TRANSACTION_URL = "/api/v1/scheduled_transactions".freeze
 
 RSpec.describe "ScheduledTransactions", type: :request do
     let(:current_user) { create(:auth_user) }
@@ -17,13 +19,13 @@ RSpec.describe "ScheduledTransactions", type: :request do
       end
 
       it "returns status ok" do
-        get "/scheduled_transactions", headers: headers
+        get SCHEDULED_TRANSACTION_URL, headers: headers
 
         expect(response).to have_http_status(:ok)
       end
 
       it "returns all categories belonging to current_user" do
-        get "/scheduled_transactions", headers: headers
+        get SCHEDULED_TRANSACTION_URL, headers: headers
 
         expect(json_response.size).to eq(3)
         expect(json_response.all? { |t| t["user_id"] == current_user.id }).to be true
@@ -35,14 +37,14 @@ RSpec.describe "ScheduledTransactions", type: :request do
       let!(:other_user_scheduled_transaction) { create(:scheduled_transaction, user: other_user) }
 
       it "returns the category if it belongs to the user" do
-        get "/scheduled_transactions/#{current_user_scheduled_transaction.id}", headers: headers
+        get SCHEDULED_TRANSACTION_URL + "/#{current_user_scheduled_transaction.id}", headers: headers
 
         expect(response).to have_http_status(:ok)
         expect(json_response["id"]).to eq(current_user_scheduled_transaction.id)
       end
 
       it "returns 404 if the category does not belong to the user" do
-        get "/scheduled_transactions/#{other_user_scheduled_transaction.id}", headers: headers
+        get SCHEDULED_TRANSACTION_URL + "/#{other_user_scheduled_transaction.id}", headers: headers
 
         expect(response).to have_http_status(:not_found)
       end
@@ -65,7 +67,7 @@ RSpec.describe "ScheduledTransactions", type: :request do
 
       it "creates the category belonging to current user" do
         expect {
-          post '/scheduled_transactions', params: valid_params, headers: headers
+          post SCHEDULED_TRANSACTION_URL, params: valid_params, headers: headers
         }.to change(ScheduledTransaction, :count).by(1)
 
         expect(response).to have_http_status(:created)
@@ -74,7 +76,7 @@ RSpec.describe "ScheduledTransactions", type: :request do
 
       it 'returns errors for invalid data' do
         invalid_params = { scheduled_transaction: { category_id: 0 } }
-        post '/scheduled_transactions', params: invalid_params, headers: headers
+        post SCHEDULED_TRANSACTION_URL, params: invalid_params, headers: headers
 
         expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["error"]).to be_present
@@ -99,7 +101,7 @@ RSpec.describe "ScheduledTransactions", type: :request do
       end
 
       it "updates a category for current_user" do
-        put "/scheduled_transactions/#{current_user_scheduled_transaction.id}", params: valid_update_params, headers: headers
+        put SCHEDULED_TRANSACTION_URL + "/#{current_user_scheduled_transaction.id}", params: valid_update_params, headers: headers
         current_user_scheduled_transaction.reload
 
         expect(response).to have_http_status(:ok)
@@ -118,14 +120,14 @@ RSpec.describe "ScheduledTransactions", type: :request do
 
       it "deletes current_user's scheduled_transactions" do
         expect {
-          delete "/scheduled_transactions/#{current_user_scheduled_transaction.id}", headers: headers
+          delete SCHEDULED_TRANSACTION_URL + "/#{current_user_scheduled_transaction.id}", headers: headers
         }.to change(ScheduledTransaction, :count).by(-1)
 
         expect(response).to have_http_status(:no_content)
       end
 
       it "returns 404 for unauthorized category" do
-        delete "/scheduled_transactions/#{other_user_scheduled_transaction.id}", headers: headers
+        delete SCHEDULED_TRANSACTION_URL + "/#{other_user_scheduled_transaction.id}", headers: headers
 
         expect(response).to have_http_status(:not_found)
       end

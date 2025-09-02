@@ -1,62 +1,38 @@
 source "https://rubygems.org"
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+# --- Core Framework ---
 gem "rails", "~> 8.0.2", ">= 8.0.2.1"
-# Use mysql as the database for Active Record
-gem "mysql2", "~> 0.5"
-# Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-# gem "jbuilder"
+gem "mysql2", "~> 0.5", ">= 0.5.6"
+gem "puma", ">= 6.6.1"
+gem "bootsnap", "1.18.6", require: false
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+# --- Authentication ---
+gem "bcrypt", "3.1.20"
+gem "jwt", "3.1.2"
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+# --- APIs / Serialization ---
+gem "active_model_serializers", "0.10.15"
+gem "rack-cors", "3.0.0"
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
-gem "solid_queue"
-gem "solid_cable"
-
-# Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
-
-# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
-gem "kamal", require: false
-
-# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
-gem "thruster", require: false
-
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
-
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-# gem "rack-cors"
-
-gem "bcrypt"
-gem "jwt"
-
-gem "sidekiq-cron"
-
-gem "active_model_serializers"
+# --- Background Jobs  ---
+gem "sidekiq-cron", "2.3.1"
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  # Debugging
+  gem "debug", "1.11.0", platforms: %i[mri windows], require: "debug/prelude"
 
-  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", require: false
+  # Security Analysis
+  gem "brakeman", "7.1.0", require: false
 
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop", require: false
-  gem "rubocop-rails", require: false
-  gem "rubocop-performance", require: false
-  gem "rubocop-rspec", require: false
-  gem "rubocop-rails-omakase", require: false
+  # Code Quality and Style
+  gem "rubocop", "1.80.1", require: false
+  gem "rubocop-rails", "2.33.3", require: false
+  gem "rubocop-performance", "1.25.0", require: false
+  gem "rubocop-rspec", "3.6.0", require: false
+  gem "rubocop-rails-omakase", "1.1.0", require: false
 
-  gem "rspec-rails"
-  gem "factory_bot_rails"
-  gem "faker"
+  # Testing
+  gem "rspec-rails", "8.0.2"
+  gem "factory_bot_rails", "6.5.0"
+  gem "faker", "3.5.2"
 end
