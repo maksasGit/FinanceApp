@@ -17,14 +17,6 @@ class CategoriesController < ApplicationController
     end
 
     def create
-        if category_params[:parent_id].present?
-            parent_category = Category.find(category_params[:parent_id])
-            unless parent_category.user.nil? || parent_category.user == current_user
-                render json: { error: "Parent category does not belong to current user or is not a shared category" }, status: :forbidden
-                return
-            end
-        end
-
         category = current_user.categories.new(category_params)
         category.save!
 
