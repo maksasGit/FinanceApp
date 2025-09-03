@@ -28,7 +28,7 @@ group :development, :test do
   gem "rubocop", "1.80.1", require: false
   gem "rubocop-rails", "2.33.3", require: false
   gem "rubocop-performance", "1.25.0", require: false
-  gem "rubocop-rspec", "3.6.0", require: false
+  gem "rubocop-rspec", "3.7.0", require: false
   gem "rubocop-rails-omakase", "1.1.0", require: false
 
   # Testing
