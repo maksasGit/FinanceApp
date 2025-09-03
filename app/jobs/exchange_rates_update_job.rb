@@ -70,6 +70,7 @@ class ExchangeRatesUpdateJob
       schedule_next_run(next_execute_at)
     else
       Rails.logger.warn("[ExchangeRatesUpdateJob] Next update time missing, not scheduling another job automatically")
+      schedule_retry(1.hour.from_now)
     end
   end
 
