@@ -17,12 +17,17 @@ gem "rack-cors", "3.0.0"
 # --- Background Jobs  ---
 gem "sidekiq-cron", "2.3.1"
 
+gem 'money'
+
+
 group :development, :test do
   # Debugging
   gem "debug", "1.11.0", platforms: %i[mri windows], require: "debug/prelude"
 
   # Security Analysis
   gem "brakeman", "7.1.0", require: false
+  gem 'dotenv-rails'
+
 
   # Code Quality and Style
   gem "rubocop", "1.80.1", require: false
