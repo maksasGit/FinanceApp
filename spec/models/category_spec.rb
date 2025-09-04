@@ -15,7 +15,7 @@ RSpec.describe Category, type: :model do
         end
 
         it "invalid category - missing required parameters" do
-            category = build(:category, name: "", category_type: "invalid_type")
+            category = build(:category, name: "", category_type: nil)
 
             expect(category).not_to be_valid
         end
