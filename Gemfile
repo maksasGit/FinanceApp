@@ -16,9 +16,9 @@ gem "rack-cors", "3.0.0"
 
 # --- Background Jobs  ---
 gem "sidekiq-cron", "2.3.1"
+gem "sidekiq-unique-jobs", "8.0.11"
 
-gem 'money'
-
+gem "money", "6.19.0"
 
 group :development, :test do
   # Debugging
@@ -26,8 +26,7 @@ group :development, :test do
 
   # Security Analysis
   gem "brakeman", "7.1.0", require: false
-  gem 'dotenv-rails'
-
+  gem "dotenv-rails", "3.1.8"
 
   # Code Quality and Style
   gem "rubocop", "1.80.1", require: false

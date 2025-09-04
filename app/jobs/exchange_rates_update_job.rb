@@ -1,16 +1,21 @@
-require 'money'
-require 'net/http'
-require 'json'
-require 'time'
+require "money"
+require "net/http"
+require "json"
+require "time"
 
 class ExchangeRatesUpdateJob
   include Sidekiq::Worker
 
-  def perform(base_currency = 'USD', status = "sidekiq_cron")
+  # block all jobs no matter on the params if this job is running or waiting in queue
+  sidekiq_options unique: :until_and_while_executing, unique_args: ->(args) { [] }
+
+  def perform(base_currency = "USD", status = "sidekiq_cron")
     @base_currency = base_currency
     @status = status
+
     Rails.logger.info("[ExchangeRatesUpdateJob] {Status = #{@status}} Start fetching rates for #{@base_currency}")
-    api_key = ENV['EXCHANGE_RATE_API_KEY']
+
+    api_key = ENV["EXCHANGE_RATE_API_KEY"]
     url = URI("https://v6.exchangerate-api.com/v6/#{api_key}/latest/#{@base_currency}")
 
     begin
@@ -19,7 +24,7 @@ class ExchangeRatesUpdateJob
       if response.is_a?(Net::HTTPSuccess)
         data = JSON.parse(response.body)
 
-        if data['result'] == 'success'
+        if data["result"] == "success"
           handle_response(data)
         else
           Rails.logger.error("[ExchangeRatesUpdateJob] API Error for #{@base_currency}: #{data['error-type'] || 'Unknown error'}")
@@ -40,8 +45,8 @@ class ExchangeRatesUpdateJob
   private
 
   def handle_response(data)
-    rates = data['conversion_rates']
-    next_execute_at_str = data['time_next_update_utc']
+    rates = data["conversion_rates"]
+    next_execute_at_str = data["time_next_update_utc"]
 
     bank = Money::Bank::VariableExchange.new
 
@@ -80,6 +85,7 @@ class ExchangeRatesUpdateJob
       Rails.logger.info("[ExchangeRatesUpdateJob] Scheduled next rates update at #{time}")
     else
       Rails.logger.warn("[ExchangeRatesUpdateJob] Next run time #{time} is in the past, not scheduling")
+      schedule_retry(1.day.from_now)
     end
   end
 
