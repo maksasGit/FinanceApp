@@ -14,8 +14,8 @@ RSpec.describe Category, type: :model do
       expect(category.category_type).to eq("expense")
     end
 
-        it "invalid category - missing required parameters" do
-            category = build(:category, name: "", category_type: "invalid_type")
+    it "invalid category - missing required parameters" do
+      category = build(:category, name: "", category_type: nil)
 
       expect(category).not_to be_valid
     end

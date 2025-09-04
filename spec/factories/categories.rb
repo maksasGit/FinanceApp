@@ -12,7 +12,7 @@ FactoryBot.define do
   factory :dynamic_category, class: Category do
     association :user, factory: :dynamic_user
     name { Faker::Commerce.product_name }
-    category_type { [ "income", "expense" ].sample }
+    category_type { [ "income", "expense", "refund" ].sample }
 
     parent { nil }
 

@@ -1,6 +1,7 @@
 class CategoriesController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_content
+  rescue_from ArgumentError, with: :render_invalid_enum
 
   def index
     user_categories = current_user.categories
