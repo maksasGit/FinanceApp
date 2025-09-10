@@ -11,10 +11,10 @@ class Transaction < ApplicationRecord
 
   public
 
-    def amount_adjustment
-        multiplier = category&.category_type == "expense" ? -1 : 1
-        amount * multiplier
-    end
+  def amount_adjustment
+    multiplier = category&.expense? ? -1 : 1
+    amount * multiplier
+  end
 
   private
 

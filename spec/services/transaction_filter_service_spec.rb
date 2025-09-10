@@ -5,12 +5,13 @@ RSpec.describe TransactionFilterService do
   let(:user) { create(:user) }
   let(:currency) { create(:currency) }
 
-  let(:category_income) { create(:category, category_type: 'income') }
-  let(:category_expense) { create(:category, category_type: 'expense') }
+  let(:category_income) { create(:category, category_type: :income) }
+  let(:category_expense) { create(:category, category_type: :expense) }
+  let(:category_refund) { create(:category, category_type: :refund) }
 
   let!(:transaction_jan) { create(:transaction, user: user, currency: currency, category: category_income, amount: 100, transaction_date: '2025-01-10') }
   let!(:transaction_feb) { create(:transaction, user: user, currency: currency, category: category_expense, amount: 200, transaction_date: '2025-02-15') }
-  let!(:transaction_march) { create(:transaction, user: user, currency: currency, category: category_income, amount: 300, transaction_date: '2025-03-20') }
+  let!(:transaction_march) { create(:transaction, user: user, currency: currency, category: category_refund, amount: 300, transaction_date: '2025-03-20') }
 
   let(:base_scope) { user.transactions.includes(:category, :currency) }
 
@@ -76,12 +77,19 @@ RSpec.describe TransactionFilterService do
     end
 
     context "when filtering by category_type" do
-      let(:filters) { { category_type: 'expense' } }
+      let(:filters) { { category_type: "expense" } }
 
       it "returns transactions with matching category_type" do
         result = described_class.new(base_scope, filters).call
 
         expect(result).to contain_exactly(transaction_feb)
+      end
+
+      it "returns transactions with matching category_type 'refund'" do
+        filters = { category_type: 'refund' }
+        result = described_class.new(base_scope, filters).call
+
+        expect(result).to contain_exactly(transaction_march)
       end
     end
 

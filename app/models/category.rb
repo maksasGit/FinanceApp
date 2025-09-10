@@ -1,5 +1,5 @@
 class Category < ApplicationRecord
-  enum :category_type, { income: "income", expense: "expense", refund: "refund" }
+  enum :category_type, { income: 0, expense: 1, refund: 2 }
 
   belongs_to :user, optional: true
   belongs_to :parent, class_name: "Category", optional: true, inverse_of: :children
@@ -8,7 +8,7 @@ class Category < ApplicationRecord
   has_many :transactions, dependent: :nullify
   has_many :scheduled_transactions, dependent: :nullify
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 255 }
   validates :category_type, presence: true, inclusion: { in: category_types.keys }
 
   validate :parent_must_exist
@@ -33,7 +33,7 @@ class Category < ApplicationRecord
   end
 
   def set_default_category_type
-    self.category_type = "expense" if category_type.blank?
+    self.category_type ||= :expense
   end
 
   def parent_belongs_to_user_or_default
