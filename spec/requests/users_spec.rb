@@ -28,7 +28,7 @@ RSpec.describe "Users", type: :request do
   end
 
   def json_response
-    response.parsed_body
+    response.parsed_body[:data]
   end
 
   describe "GET /users" do

@@ -6,13 +6,13 @@ class UsersController < ApplicationController
     def index
         users = User.all
 
-        render json: users, status: :ok
+        render_jsonapi_response(users)
     end
 
     def show
         user = User.find(params[:id])
 
-        render json: user, status: :ok
+        render_jsonapi_response(user)
     end
 
     def create
@@ -20,14 +20,14 @@ class UsersController < ApplicationController
         user.save!
         token = encode_token(user_id: user.id)
 
-        render json: { user: user, token: token }, status: :created
+        render_jsonapi_response(user, status: :created, meta: { token: token })
     end
 
     def update
         user = User.find(params[:id])
         user.update!(user_params)
 
-        render json: user, status: :ok
+        render_jsonapi_response(user)
     end
 
     def destroy
@@ -40,11 +40,11 @@ class UsersController < ApplicationController
     private
 
     def render_not_found(exception)
-        render json: { error: exception.message }, status: :not_found
+        render_jsonapi_error(exception.message, status: :not_found)
     end
 
     def render_unprocessable_content(exception)
-        render json: { error: exception.record.errors.full_messages }, status: :unprocessable_content
+        render_jsonapi_error(exception.record.errors.full_messages, status: :unprocessable_content)
     end
 
     def user_params
