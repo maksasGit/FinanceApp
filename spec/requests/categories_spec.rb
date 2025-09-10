@@ -65,13 +65,13 @@ RSpec.describe 'Categories', type: :request do
   describe 'POST /categories' do
     let!(:parent_category) { create(:dynamic_category, user: current_user) }
     let(:valid_params) do
-    {
-      category: {
-        parent_id: parent_category.id,
-        name: 'Valid name',
-        category_type: parent_category.category_type
+      {
+        category: {
+          parent_id: parent_category.id,
+          name: 'Valid name',
+          category_type: parent_category.category_type
+        }
       }
-    }
     end
 
     it 'creates the category belonging to current user' do
@@ -99,7 +99,7 @@ RSpec.describe 'Categories', type: :request do
     end
 
     it 'returns unprocessable_content for data when parent_id category assigned to antoher user' do
-        other_user_category = create(:dynamic_category, user: other_user)
+      other_user_category = create(:dynamic_category, user: other_user)
         forbidden_params = valid_params
         forbidden_params[:category][:parent_id] = other_user_category.id
         post '/api/v1/categories', params: forbidden_params, headers: headers
@@ -113,13 +113,13 @@ RSpec.describe 'Categories', type: :request do
     let!(:current_user_category) { create(:dynamic_category, user: current_user) }
     let!(:other_user_category) { create(:dynamic_category, user: other_user) }
     let(:valid_update_params) do
-    {
-      category: {
-        parent_id: parent_category.id,
-        name: 'Valid name',
-        category_type: parent_category.category_type
+      {
+        category: {
+          parent_id: parent_category.id,
+          name: 'Valid name',
+          category_type: parent_category.category_type
+        }
       }
-    }
     end
 
     it 'updates a category for current_user' do

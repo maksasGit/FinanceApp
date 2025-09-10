@@ -1,24 +1,24 @@
 class Transaction < ApplicationRecord
-    belongs_to :user
-    belongs_to :category
-    belongs_to :currency
+  belongs_to :user
+  belongs_to :category
+  belongs_to :currency
 
-    validates :amount, presence: true, numericality: { greater_than: 0 }
-    validates :transaction_date, presence: true
-    validates :description, length: { maximum: 255 }
+  validates :amount, presence: true, numericality: { greater_than: 0 }
+  validates :transaction_date, presence: true
+  validates :description, length: { maximum: 255 }
 
-    before_validation :set_date_if_not_set
+  before_validation :set_date_if_not_set
 
-    public
+  public
 
     def amount_adjustment
         multiplier = category&.category_type == "income" ? 1 : -1
         amount * multiplier
     end
 
-    private
+  private
 
-    def set_date_if_not_set
-        self.transaction_date ||= DateTime.current
-    end
+  def set_date_if_not_set
+    self.transaction_date ||= DateTime.current
+  end
 end

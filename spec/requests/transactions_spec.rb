@@ -59,15 +59,15 @@ RSpec.describe 'Transactions', type: :request do
 
   describe 'POST /transactions' do
     let(:valid_params) do
-    {
-      transaction: {
-        amount: 50,
-        category_id: category.id,
-        currency_id: currency.id,
-        description: 'Test transaction',
-        transaction_date: Time.current
+      {
+        transaction: {
+          amount: 50,
+          category_id: category.id,
+          currency_id: currency.id,
+          description: 'Test transaction',
+          transaction_date: Time.current
+        }
       }
-    }
     end
 
     it 'creates the transaction belonging to current user' do
