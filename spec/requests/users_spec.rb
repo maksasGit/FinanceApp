@@ -57,7 +57,7 @@ RSpec.describe "Users", type: :request do
     end
 
     it "returns 404 if no such user" do
-       get URL + "#{0}", headers: headers
+      get URL + "#{0}", headers: headers
 
       expect(response).to have_http_status(:not_found)
     end

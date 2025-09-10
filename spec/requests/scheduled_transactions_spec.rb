@@ -55,17 +55,17 @@ RSpec.describe 'ScheduledTransactions', type: :request do
 
   describe 'POST /scheduled_transactions' do
     let(:valid_params) do
-    {
-      scheduled_transaction: {
-        category_id: create(:category).id,
-        currency_id: create(:currency).id,
-        amount: 100,
-        description: 'valid desctiption',
-        frequency: 'weekly',
-        day_of_week: 3,
-        start_date: 1.day.from_now
+      {
+        scheduled_transaction: {
+          category_id: create(:category).id,
+          currency_id: create(:currency).id,
+          amount: 100,
+          description: 'valid desctiption',
+          frequency: 'weekly',
+          day_of_week: 3,
+          start_date: 1.day.from_now
+        }
       }
-    }
     end
 
     it 'creates the category belonging to current user' do
@@ -90,17 +90,17 @@ RSpec.describe 'ScheduledTransactions', type: :request do
     let!(:current_user_scheduled_transaction) { create(:scheduled_transaction, :weekly, day_of_week: 3, user: current_user) }
     let!(:other_user_scheduled_transaction) { create(:scheduled_transaction, :weekly, day_of_week: 3, user: other_user) }
     let(:valid_update_params) do
-    {
-      scheduled_transaction: {
-        category_id: create(:category).id,
-        currency_id: create(:currency).id,
-        amount: 100,
-        description: 'valid desctiption',
-        frequency: 'monthly',
-        day_of_month: 23,
-        start_date: 1.day.from_now
+      {
+        scheduled_transaction: {
+          category_id: create(:category).id,
+          currency_id: create(:currency).id,
+          amount: 100,
+          description: 'valid desctiption',
+          frequency: 'monthly',
+          day_of_month: 23,
+          start_date: 1.day.from_now
+        }
       }
-    }
     end
 
     it 'updates a category for current_user' do
