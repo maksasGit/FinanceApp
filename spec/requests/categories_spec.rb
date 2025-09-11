@@ -91,7 +91,7 @@ RSpec.describe 'Categories', type: :request do
     end
 
     it 'returns unprocessable_content for invalid data' do
-      invalid_params = { category: { name: '', category_type: 'invalid_type' } }
+      invalid_params = { category: { name: '', category_type: nil } }
       post CATEGORIES_URL, params: invalid_params, headers: headers
 
       expect(response).to have_http_status(:unprocessable_content)

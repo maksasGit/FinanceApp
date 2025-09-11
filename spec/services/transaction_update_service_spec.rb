@@ -4,8 +4,9 @@ RSpec.describe TransactionUpdateService, type: :service do
   subject(:service) { described_class.new(transaction, update_params) }
 
   let(:user) { create(:user, balance: 100.0) }
-  let(:category_expense) { create(:category, category_type: 'expense') }
-  let(:category_income) { create(:category, category_type: 'income') }
+  let(:category_expense) { create(:category, category_type: :expense) }
+  let(:category_income) { create(:category, category_type: :income) }
+  let(:category_refund) { create(:category, category_type: :refund) }
   let(:currency) { create(:currency) }
 
   let!(:transaction) do
@@ -31,6 +32,19 @@ RSpec.describe TransactionUpdateService, type: :service do
 
       it 'updates the category' do
         expect(service.call.reload.category).to eq(category_income)
+      end
+
+      it 'updates the user balance correctly' do
+        # Not modified Transaction change user balance on -50, we change it on +50 so user balance should increase on 100
+        expect { service.call }.to change { user.reload.balance }.by(100.0)
+      end
+    end
+
+    context 'with valid category change (expense to refund)' do
+      let(:update_params) { { category_id: category_refund.id } }
+
+      it 'updates the category' do
+        expect(service.call.reload.category).to eq(category_refund)
       end
 
       it 'updates the user balance correctly' do

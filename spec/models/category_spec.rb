@@ -5,7 +5,7 @@ RSpec.describe Category, type: :model do
     it "valid category" do
       category = build(:category, user: create(:user))
 
-        expect(category).to be_valid
+      expect(category).to be_valid
     end
 
     it "default category type is set correctly when not provided" do
@@ -14,8 +14,27 @@ RSpec.describe Category, type: :model do
       expect(category.category_type).to eq("expense")
     end
 
-        it "invalid category - missing required parameters" do
-            category = build(:category, name: "", category_type: "invalid_type")
+    it 'create category with category_type as integer' do
+      category = create(:category, category_type: 1)
+
+      expect(category.category_type).to eq("expense")
+    end
+
+    it 'create category with category_type "refund"' do
+      category = create(:category, category_type: "refund")
+
+      expect(category.category_type).to eq("refund")
+    end
+
+    it "is invalid when required parameters are missing" do
+      category = build(:category, name: "", category_type: nil)
+
+      expect(category).not_to be_valid
+    end
+
+    it "is invalid when name is too big" do
+      long_name = "a" * 256
+      category = build(:category, name: long_name)
 
       expect(category).not_to be_valid
     end
