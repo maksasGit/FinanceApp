@@ -9,31 +9,31 @@ RSpec.describe Category, type: :model do
     end
 
     it "default category type is set correctly when not provided" do
-      category = create(:category, category_type: nil)
+      category = create(:category)
 
       expect(category.category_type).to eq("expense")
     end
 
-    it 'create category with category_type as integer' do
+    it 'creates a category with category_type as integer' do
       category = create(:category, category_type: 1)
 
       expect(category.category_type).to eq("expense")
     end
 
-    it 'create category with category_type "refund"' do
+    it 'creates a category with category_type "refund"' do
       category = create(:category, category_type: "refund")
 
       expect(category.category_type).to eq("refund")
     end
 
-    it "is invalid when required parameters are missing" do
+    it "is invalid when name is missing" do
       category = build(:category, name: "", category_type: nil)
 
       expect(category).not_to be_valid
     end
 
     it "is invalid when name is too big" do
-      long_name = "a" * 256
+      long_name = "a" * 31
       category = build(:category, name: long_name)
 
       expect(category).not_to be_valid

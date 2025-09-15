@@ -8,15 +8,13 @@ class Category < ApplicationRecord
   has_many :transactions, dependent: :nullify
   has_many :scheduled_transactions, dependent: :nullify
 
-  validates :name, presence: true, length: { maximum: 255 }
-  validates :category_type, presence: true, inclusion: { in: category_types.keys }
+  validates :name, presence: true, length: { maximum: 30 }
+  validates :category_type, presence: true
 
   validate :parent_must_exist
   validate :user_must_exist
   validate :parent_belongs_to_user_or_default
   validate :parent_category_type_match
-
-  before_validation :set_default_category_type
 
   private
 
@@ -30,10 +28,6 @@ class Category < ApplicationRecord
     if user_id.present? && user.nil?
       errors.add(:user_id, "must refer to an existing user")
     end
-  end
-
-  def set_default_category_type
-    self.category_type ||= :expense
   end
 
   def parent_belongs_to_user_or_default

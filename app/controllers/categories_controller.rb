@@ -42,6 +42,10 @@ class CategoriesController < ApplicationController
 
   private
 
+  def render_invalid_enum(exception)
+    render_jsonapi_error(exception.message, status: :unprocessable_content)
+  end
+
   def render_not_found(exception)
     render_jsonapi_error(exception.message, status: :not_found)
   end

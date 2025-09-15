@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema[8.0].define(version: 2025_09_10_135706) do
   create_table "categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "name", limit: 30, null: false
     t.integer "category_type", default: 1, null: false
     t.bigint "user_id"
     t.bigint "parent_id"

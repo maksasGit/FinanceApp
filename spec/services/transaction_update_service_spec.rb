@@ -21,34 +21,31 @@ RSpec.describe TransactionUpdateService, type: :service do
         expect(service.call.reload.amount).to eq(30.0)
       end
 
-      it 'updates the user balance correctly (adjusted by difference)' do
-        # Not modified Transaction change user balance on -50, we change it on -30 so user balance should increase on 20
+      it 'updates the user balance by -50 when changing transaction amount from 20 to -30' do
         expect { service.call }.to change { user.reload.balance }.by(20.0)
       end
     end
 
-    context 'with valid category change (expense to income)' do
+    context 'with category change from expense to income' do
       let(:update_params) { { category_id: category_income.id } }
 
       it 'updates the category' do
         expect(service.call.reload.category).to eq(category_income)
       end
 
-      it 'updates the user balance correctly' do
-        # Not modified Transaction change user balance on -50, we change it on +50 so user balance should increase on 100
+      it 'updates the user balance by +100 when changing transaction amount from -50 to +50' do
         expect { service.call }.to change { user.reload.balance }.by(100.0)
       end
     end
 
-    context 'with valid category change (expense to refund)' do
+    context 'with category change from expense to refund' do
       let(:update_params) { { category_id: category_refund.id } }
 
       it 'updates the category' do
         expect(service.call.reload.category).to eq(category_refund)
       end
 
-      it 'updates the user balance correctly' do
-        # Not modified Transaction change user balance on -50, we change it on +50 so user balance should increase on 100
+      it 'updates the user balance by +100 when changing transaction amount from -50 to +50' do
         expect { service.call }.to change { user.reload.balance }.by(100.0)
       end
     end
