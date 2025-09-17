@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe TransactionUpdateService, type: :service do
-  subject(:service) { described_class.new(transaction, update_params) }
+  subject(:service) { described_class.new(transaction, update_params).call }
 
   let(:user) { create(:user, balance: 100.0) }
-  let(:category_expense) { create(:category, category_type: :expense) }
-  let(:category_income) { create(:category, category_type: :income) }
-  let(:category_refund) { create(:category, category_type: :refund) }
+  let(:expense_category) { create(:category, category_type: :expense) }
+  let(:income_category) { create(:category, category_type: :income) }
+  let(:refund_category) { create(:category, category_type: :refund) }
   let(:currency) { create(:currency) }
 
   let!(:transaction) do
-    create(:transaction, user: user, category: category_expense, amount: 50.0, currency: currency)
+    create(:transaction, user: user, category: expense_category, amount: 50.0, currency: currency)
   end
 
   describe '#call' do
@@ -18,56 +18,56 @@ RSpec.describe TransactionUpdateService, type: :service do
       let(:update_params) { { amount: 30.0 } }
 
       it 'updates the transaction amount' do
-        expect(service.call.reload.amount).to eq(30.0)
+        expect(service.reload.amount).to eq(30.0)
       end
 
       it 'updates the user balance by -50 when changing transaction amount from 20 to -30' do
-        expect { service.call }.to change { user.reload.balance }.by(20.0)
+        expect { service }.to change { user.reload.balance }.by(20.0)
       end
     end
 
     context 'with category change from expense to income' do
-      let(:update_params) { { category_id: category_income.id } }
+      let(:update_params) { { category_id: income_category.id } }
 
       it 'updates the category' do
-        expect(service.call.reload.category).to eq(category_income)
+        expect(service.reload.category).to eq(income_category)
       end
 
       it 'updates the user balance by +100 when changing transaction amount from -50 to +50' do
-        expect { service.call }.to change { user.reload.balance }.by(100.0)
+        expect { service }.to change { user.reload.balance }.by(100.0)
       end
     end
 
     context 'with category change from expense to refund' do
-      let(:update_params) { { category_id: category_refund.id } }
+      let(:update_params) { { category_id: refund_category.id } }
 
       it 'updates the category' do
-        expect(service.call.reload.category).to eq(category_refund)
+        expect(service.reload.category).to eq(refund_category)
       end
 
       it 'updates the user balance by +100 when changing transaction amount from -50 to +50' do
-        expect { service.call }.to change { user.reload.balance }.by(100.0)
+        expect { service }.to change { user.reload.balance }.by(100.0)
       end
     end
 
     context 'with valid amount and category change' do
-      let(:update_params) { { amount: 20.0, category_id: category_income.id } }
+      let(:update_params) { { amount: 20.0, category_id: income_category.id } }
 
       it 'updates amount' do
-        service.call
+        service
 
         expect(transaction.reload.amount).to eq(20.0)
       end
 
       it 'updates category' do
-        service.call
+        service
 
-        expect(service.call.category).to eq(category_income)
+        expect(service.category).to eq(income_category)
       end
 
       it 'correctly adjusts user balance' do
         # Not modified Transaction change user balance on -50, we change it on +20 so user balance should increase on 70
-        expect { service.call }.to change { user.reload.balance }.by(70.0)
+        expect { service }.to change { user.reload.balance }.by(70.0)
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe TransactionUpdateService, type: :service do
 
       it 'raises validation error and does not change balance' do
         begin
-          service.call
+          service
         rescue ActiveRecord::RecordInvalid
         end
 
@@ -88,7 +88,7 @@ RSpec.describe TransactionUpdateService, type: :service do
       let(:update_params) { { category_id: 0 } }
 
       it 'raises RecordInvalid error' do
-        expect { service.call }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { service }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end

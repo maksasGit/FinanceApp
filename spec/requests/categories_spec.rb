@@ -100,11 +100,18 @@ RSpec.describe 'Categories', type: :request do
 
     it 'returns unprocessable_content for data when parent_id category assigned to antoher user' do
       other_user_category = create(:dynamic_category, user: other_user)
-        forbidden_params = valid_params
-        forbidden_params[:category][:parent_id] = other_user_category.id
-        post '/api/v1/categories', params: forbidden_params, headers: headers
+      forbidden_params = valid_params
+      forbidden_params[:category][:parent_id] = other_user_category.id
+      post CATEGORIES_URL, params: forbidden_params, headers: headers
 
-        expect(response).to have_http_status(:unprocessable_content)
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it 'returns error for invalid category_type' do
+      invalid_params = { category: { category_type: 'invalid_type' } }
+      post CATEGORIES_URL, params: invalid_params, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -134,6 +141,13 @@ RSpec.describe 'Categories', type: :request do
       put "#{CATEGORIES_URL}/#{other_user_category.id}", params: valid_update_params, headers: headers
 
       expect(response).to have_http_status(:not_found)
+    end
+
+    it 'returns error for invalid category_type' do
+      invalid_params = { category: { category_type: 'invalid_type' } }
+      put "#{CATEGORIES_URL}/#{current_user_category.id}", params: invalid_params, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
