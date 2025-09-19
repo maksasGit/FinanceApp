@@ -1,13 +1,13 @@
 class CategoriesController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_content
+  # rescue_from ActiveRecord::InvalidForeignKey, with: :render_invalid_foreign_key
+  rescue_from ArgumentError, with: :render_invalid_enum
 
   def index
-    user_categories = current_user.categories
-    default_categories = Category.where(user_id: nil)
-    all_categories = default_categories + user_categories
+    categories = Category.where("user_id = ? OR user_id IS NULL", current_user.id)
 
-    render_jsonapi_response(all_categories)
+    render_jsonapi_response(categories)
   end
 
   def show
@@ -40,6 +40,14 @@ class CategoriesController < ApplicationController
   end
 
   private
+
+  def render_invalid_enum(exception)
+    render_jsonapi_error(exception.message, status: :unprocessable_content)
+  end
+
+  def render_invalid_foreign_key(exception)
+    render_jsonapi_error("Not existing parent category", status: :unprocessable_content)
+  end
 
   def render_not_found(exception)
     render_jsonapi_error(exception.message, status: :not_found)
