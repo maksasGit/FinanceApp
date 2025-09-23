@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 # --- Core Framework ---
 gem "rails", "~> 8.0.2", ">= 8.0.2.1"
-gem "mysql2", "~> 0.5", ">= 0.5.6"
+gem "mysql2", "~> 0.5"
 gem "puma", ">= 6.6.1"
 gem "bootsnap", "1.18.6", require: false
 
