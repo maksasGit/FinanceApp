@@ -22,7 +22,7 @@ group :development, :test do
   gem "debug", "1.11.0", platforms: %i[mri windows], require: "debug/prelude"
 
   # Security Analysis
-  gem "brakeman", "7.1.0", require: false
+  gem "brakeman", "7.1.1", require: false
 
   # Code Quality and Style
   gem "rubocop", "1.80.2", require: false
