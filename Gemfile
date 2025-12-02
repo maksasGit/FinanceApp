@@ -26,7 +26,7 @@ group :development, :test do
 
   # Code Quality and Style
   gem "rubocop", "1.80.2", require: false
-  gem "rubocop-rails", "2.33.3", require: false
+  gem "rubocop-rails", "2.34.2", require: false
   gem "rubocop-performance", "1.25.0", require: false
   gem "rubocop-rspec", "3.7.0", require: false
   gem "rubocop-rails-omakase", "1.1.0", require: false
