@@ -34,5 +34,5 @@ group :development, :test do
   # Testing
   gem "rspec-rails", "8.0.2"
   gem "factory_bot_rails", "6.5.0"
-  gem "faker", "3.5.2"
+  gem "faker", "3.5.3"
 end
